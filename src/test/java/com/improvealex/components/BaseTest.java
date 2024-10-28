@@ -5,8 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.improvealex.pom.LandingPage;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -28,26 +31,58 @@ public class BaseTest {
         FileInputStream inputFile = new FileInputStream("src/main/java/com/improvealex/resources/config.properties");
         properties.load(inputFile);
 
-        String browser = System.getProperty("browser")!= null ? System.getProperty("browser") : properties.getProperty("browser");
+        String browser = System.getProperty("browser") != null ? System.getProperty("browser") : properties.getProperty("browser");
+        boolean headless = Boolean.parseBoolean(System.getProperty("headless", properties.getProperty("headless", "false")));
+        String windowSize = System.getProperty("windowSize", properties.getProperty("windowSize", "maximize"));
         WebDriver webDriver;
 
         switch (browser.toLowerCase()) {
             case "chrome":
-                webDriver = new ChromeDriver();
+                ChromeOptions chromeOptions = new ChromeOptions();
+                if (headless) chromeOptions.addArguments("--headless=new");
+                if (!windowSize.equals("maximize")) {
+                    chromeOptions.addArguments("--window-size=" + windowSize);
+                }
+                webDriver = new ChromeDriver(chromeOptions);
                 break;
+
             case "firefox":
-                webDriver = new FirefoxDriver();
+                FirefoxOptions firefoxOptions = new FirefoxOptions();
+                if (headless) firefoxOptions.addArguments("--headless");
+                if (!windowSize.equals("maximize")) {
+                    firefoxOptions.addArguments("--width=" + windowSize.split("x")[0]);
+                    firefoxOptions.addArguments("--height=" + windowSize.split("x")[1]);
+                }
+                webDriver = new FirefoxDriver(firefoxOptions);
                 break;
+
             case "edge":
-                webDriver = new EdgeDriver();
+                EdgeOptions edgeOptions = new EdgeOptions();
+                if (headless) edgeOptions.addArguments("--headless");
+                if (!windowSize.equals("maximize")) {
+                    edgeOptions.addArguments("--window-size=" + windowSize);
+                }
+                webDriver = new EdgeDriver(edgeOptions);
                 break;
+
             default:
-                webDriver = new ChromeDriver(); // Default to Chrome if unrecognized
+                ChromeOptions defaultOptions = new ChromeOptions();
+                if (headless) defaultOptions.addArguments("--headless=new");
+                if (!windowSize.equals("maximize")) {
+                    defaultOptions.addArguments("--window-size=" + windowSize);
+                }
+                webDriver = new ChromeDriver(defaultOptions); // Default to Chrome if unrecognized
                 break;
         }
 
         driver.set(webDriver); // Set the WebDriver instance for the current thread
-        driver.get().manage().window().maximize(); // Maximize the browser window
+
+        // Manage window based on the 'windowSize' configuration
+        if (windowSize.equals("maximize")) {
+            driver.get().manage().window().maximize();
+        }
+
+        // Add any additional setup if necessary, like setting a default URL
     }
 
     @AfterMethod
