@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite parallel="tests" thread-count="5" name="All Test Suite">
+    <listeners>
+        <listener class-name="com.improvealex.components.Listeners"></listener>
+    </listeners>
+    <test verbose="2" preserve-order="true" name="Buy One Product">
+        <classes>
+            <class name="com.improvealex.TestBuyProduct">
+                <methods>
+                    <include name="testBuyOneProduct"/>
+                    <include name="validateOneProductHasOrderPlaced"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+    <test verbose="2" preserve-order="true" name="Login">
+        <classes>
+            <class name="com.improvealex.TestLogin">
+                <methods>
+                    <include name="incorrectEmailOrPassword"/>
+                    <include name="happyLogin"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>
