@@ -10,7 +10,7 @@ import java.time.Duration;
 import java.util.List;
 
 public abstract class BasePage {
-    private final long DEFAULT_WAIT_TIME = 10; // Default wait time in seconds
+    private final long DEFAULT_WAIT_TIME = 20; // Default wait time in seconds
     protected WebDriver driver;
 
     public BasePage(WebDriver driver) {
