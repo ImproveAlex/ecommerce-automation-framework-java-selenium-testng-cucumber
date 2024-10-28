@@ -50,8 +50,8 @@ public class BaseTest {
                 FirefoxOptions firefoxOptions = new FirefoxOptions();
                 if (headless) firefoxOptions.addArguments("--headless");
                 if (!windowSize.equals("maximize")) {
-                    firefoxOptions.addArguments("--width=" + windowSize.split("x")[0]);
-                    firefoxOptions.addArguments("--height=" + windowSize.split("x")[1]);
+                    firefoxOptions.addArguments("--width=" + windowSize.split(",")[0]);
+                    firefoxOptions.addArguments("--height=" + windowSize.split(",")[1]);
                 }
                 webDriver = new FirefoxDriver(firefoxOptions);
                 break;
